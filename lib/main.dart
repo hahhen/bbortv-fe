@@ -148,34 +148,64 @@ class _HomeState extends State {
   }
 }
 
-class Video extends StatelessWidget {
-  const Video({super.key});
+class Video extends StatefulWidget {
+  final int category;
+  const Video({super.key, required this.category});
+
+  @override
+  State<Video> createState() => _VideoState();
+}
+
+class _VideoState extends State<Video> {
+  late final Future _future;
+  @override
+  void initState() {
+    super.initState();
+    _future = Supabase.instance.client
+        .from('video')
+        .select()
+        .match({'bureau': widget.category});
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 20.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10.0),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(14.0),
-                child: Image.network(
-                  "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Aspect_ratio_-_16x9.svg/2560px-Aspect_ratio_-_16x9.svg.png",
-                  width: 240,
-                  height: 135,
-                )),
-          ),
-          const Text(
-            "Yarthi II: Breakthrough",
-            style: TextStyle(fontSize: 14, height: 1, letterSpacing: -0.5),
-          ),
-          const Text("2024", style: TextStyle(fontSize: 12))
-        ],
-      ),
-    );
+    return FutureBuilder(
+        future: _future,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          final videos = snapshot.data!;
+          return ListView.builder(
+              shrinkWrap: true,
+              itemCount: videos.length,
+              itemBuilder: ((context, index) {
+                final video = videos[index];
+                return  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(14.0),
+                            child: Image.network(
+                              video['thumbnail'],
+                              width: 240,
+                              height: 135,
+                            )),
+                      ),
+                      Text(
+                        video['name'],
+                        style: const TextStyle(
+                            fontSize: 14, height: 1, letterSpacing: -0.5),
+                      ),
+                      Text(video['release_date'],
+                          style: const TextStyle(fontSize: 12))
+                    ],
+                  
+                );
+              }));
+        });
   }
 }
 
@@ -186,11 +216,10 @@ class Category extends StatefulWidget {
   State createState() => _CategoryState();
 }
 
-class _CategoryState extends State {
+class _CategoryState extends State<Category> {
   final _future = Supabase.instance.client.from('bureau').select();
   @override
   Widget build(BuildContext context) {
-    print('size is ');
     return FutureBuilder(
         future: _future,
         builder: (context, snapshot) {
@@ -203,34 +232,35 @@ class _CategoryState extends State {
             itemCount: bureaus.length,
             itemBuilder: ((context, index) {
               final bureau = bureaus[index];
-              ListTile(
-                title: Text(bureau['name']),
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10.0),
+                          child: Text(
+                            bureau['name'],
+                            style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: -0.5),
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Video(
+                              category: bureau['id'],
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                  )
+                ],
               );
-              // return Column(
-              //   children: [
-              //     Padding(
-              //       padding: const EdgeInsets.symmetric(vertical: 20.0),
-              //       child: Column(
-              //         crossAxisAlignment: CrossAxisAlignment.start,
-              //         children: [
-              //           Padding(
-              //             padding: const EdgeInsets.only(bottom: 10.0),
-              //             child: Text(
-              //               bureau['name'],
-              //               style: const TextStyle(
-              //                   fontSize: 16,
-              //                   fontWeight: FontWeight.w700,
-              //                   letterSpacing: -0.5),
-              //             ),
-              //           ),
-              //           const Row(
-              //             children: [Video()],
-              //           )
-              //         ],
-              //       ),
-              //     )
-              //   ],
-              // );
             }),
           );
         });
