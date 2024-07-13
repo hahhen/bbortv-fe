@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:bbortv_fe/highlight.dart';
+import 'package:bbortv_fe/video.dart';
 
 Future<void> main() async {
   await Supabase.initialize(
@@ -21,6 +23,7 @@ Future<void> main() async {
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.show();
     await windowManager.focus();
+    await windowManager.setAspectRatio(16 / 9);
   });
 
   runApp(const MyApp());
@@ -84,81 +87,14 @@ class _HomeState extends State {
       ),
       body: SingleChildScrollView(
         controller: scrollController,
-        child: Column(
+        child: const Column(
           children: [
-            const Highlight(),
-            Center(child: ElevatedButton(onPressed: (){
-              scrollController.animateTo(0,
-                    duration: const Duration(seconds: 1), curve: Curves.easeIn);
-            }, child: const Icon(Icons.keyboard_arrow_down))),
-            const Padding(padding: EdgeInsets.all(30.0), child: Category())
+            Highlight(),
+            Padding(padding: EdgeInsets.symmetric(horizontal: 30), child: Category())
           ],
         ),
       ),
     );
-  }
-}
-
-class Video extends StatefulWidget {
-  final int category;
-  const Video({super.key, required this.category});
-
-  @override
-  State<Video> createState() => _VideoState();
-}
-
-class _VideoState extends State<Video> {
-  late final Future _future;
-  @override
-  void initState() {
-    super.initState();
-    _future = Supabase.instance.client
-        .from('video')
-        .select()
-        .match({'bureau': widget.category});
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: _future,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final videos = snapshot.data!;
-          return ListView.builder(
-              shrinkWrap: true,
-              itemCount: videos.length,
-              itemBuilder: ((context, index) {
-                final video = videos[index];
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 10.0),
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(14.0),
-                          child: Image.network(
-                            video['thumbnail'],
-                            width: 240,
-                            height: 135,
-                          )),
-                    ),
-                    Text(
-                      video['name'],
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 14,
-                          height: 1,
-                          letterSpacing: -0.5),
-                    ),
-                    Text(video['release_date'],
-                        style: const TextStyle(fontSize: 12))
-                  ],
-                );
-              }));
-        });
   }
 }
 
@@ -217,90 +153,6 @@ class _CategoryState extends State<Category> {
               );
             }),
           );
-        });
-  }
-}
-
-class Highlight extends StatefulWidget {
-  const Highlight({super.key});
-
-  @override
-  State<Highlight> createState() => _HighlightState();
-}
-
-class _HighlightState extends State<Highlight> {
-  final _future = Supabase.instance.client
-      .from('video')
-      .select('name, bureau(name), sinopsis, thumbnail')
-      .order('release_date', ascending: false)
-      .limit(1);
-  
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: _future,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final highlight = snapshot.data![0];
-          return Container(
-              child: Stack(
-            children: [
-              Image.network(
-                  highlight['thumbnail'],),
-              Positioned(
-                  child: Expanded(
-                      child: Container(
-                height: MediaQuery.of(context).size.height,
-                decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                      Color.fromARGB(0, 0, 0, 0),
-                      Color.fromARGB(255, 0, 0, 0)
-                    ])),
-              ))),
-              Positioned(
-                  bottom: 70.0,
-                  left: 0.0,
-                  child: Container(
-                      width: 800,
-                      padding: const EdgeInsets.all(30),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(bottom: 10.0),
-                            child: const Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("YARTHI II: BREAKTHROUGH",
-                                    style: TextStyle(
-                                        height: 1,
-                                        fontSize: 45,
-                                        fontWeight: FontWeight.w700,
-                                        letterSpacing: -3.5)),
-                                Text("BRAIN BUREAU OF RESEARCH NO.1",
-                                    style: TextStyle(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.w400,
-                                        letterSpacing: -0.8)),
-                              ],
-                            ),
-                          ),
-                          const Text(
-                              "The sequence to the highly acclaimed debut album by Hahhen: Yarthi. Explores a grief thematic, surrounded by ambience and melancholy. It’s a deep dive into Kanye West’s 2018 album run, containing songs from Ye, Kids See Ghosts, Daytona and more.",
-                              style: TextStyle(
-                                height: 1.2,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                              )),
-                        ],
-                      ))),
-            ],
-          ));
         });
   }
 }

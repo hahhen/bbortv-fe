@@ -1,0 +1,65 @@
+import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+class Video extends StatefulWidget {
+  final int category;
+  const Video({super.key, required this.category});
+
+  @override
+  State<Video> createState() => _VideoState();
+}
+
+class _VideoState extends State<Video> {
+  late final Future _future;
+  @override
+  void initState() {
+    super.initState();
+    _future = Supabase.instance.client
+        .from('video')
+        .select()
+        .match({'bureau': widget.category});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: _future,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          final videos = snapshot.data!;
+          return ListView.builder(
+              shrinkWrap: true,
+              itemCount: videos.length,
+              itemBuilder: ((context, index) {
+                final video = videos[index];
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10.0),
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(14.0),
+                          child: Image.network(
+                            video['thumbnail'],
+                            width: 240,
+                            height: 135,
+                          )),
+                    ),
+                    Text(
+                      video['name'],
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                          height: 1,
+                          letterSpacing: -0.5),
+                    ),
+                    Text(video['release_date'],
+                        style: const TextStyle(fontSize: 12))
+                  ],
+                );
+              }));
+        });
+  }
+}
