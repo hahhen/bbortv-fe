@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
-import 'package:flutter/widgets.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -121,23 +120,43 @@ class MyApp extends StatelessWidget {
                           ))),
                 ],
               )),
-              Container(
-                child: Column(children: [
-                  Column(children: [
-                    const Text("BRAIN BUREAU OF RESEARCH NO.1"),
-                    Row(
-                      children: [
-                        Column(
+              Padding(
+                padding: const EdgeInsets.all(30.0),
+                child: Container(
+                  child: Column(children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 10.0),
+                          child: Text("BRAIN BUREAU OF RESEARCH NO.1", style: TextStyle(fontSize: 16 ,fontWeight: FontWeight.w700, letterSpacing: -0.5),),
+                        ),
+                        Row(
                           children: [
-                            Image.network("https://i9.ytimg.com/vi/7I7-6EVqWAk/mqdefault.jpg?sqp=COyux7QG-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGEggSChyMA8=&rs=AOn4CLCY3KK738CfhD-R5fGsGC42Aadw3Q", width: 160, height: 90,),
-                            const Text("YARTHI II: BREAKTHROUGH"),
-                            const Text("2024")
+                            Padding(
+                              padding: const EdgeInsets.only(right: 20.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 10.0),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(14.0),
+                                      child: Image.network("https://i9.ytimg.com/vi/7I7-6EVqWAk/mqdefault.jpg?sqp=COyux7QG-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGEggSChyMA8=&rs=AOn4CLCY3KK738CfhD-R5fGsGC42Aadw3Q", width: 240, height: 135,)),
+                                  ),
+                                  const Text("Yarthi II: Breakthrough", style: TextStyle(fontSize: 14, height: 1, letterSpacing: -0.5),),
+                                  const Text("2024", style: TextStyle(fontSize: 12))
+                                ],
+                              ),
+                            )
                           ],
                         )
-                      ],
+                      ],),
                     )
-                  ],)
-                ],),
+                  ],),
+                ),
               )
             ],
           ),
