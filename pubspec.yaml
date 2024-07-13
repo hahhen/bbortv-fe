@@ -32,6 +32,7 @@ dependencies:
     sdk: flutter
   bitsdojo_window:
   window_manager: ^0.3.9
+  supabase_flutter:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
