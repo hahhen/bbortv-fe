@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:bbortv_fe/main.dart';
 
 class Video extends StatefulWidget {
   final int category;
@@ -34,7 +35,8 @@ class _VideoState extends State<Video> {
               itemCount: videos.length,
               itemBuilder: ((context, index) {
                 final video = videos[index];
-                return Column(
+                return 
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(

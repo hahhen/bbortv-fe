@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:bbortv_fe/highlight.dart';
-import 'package:bbortv_fe/video.dart';
+import 'package:bbortv_fe/pages/home.dart';
 
 Future<void> main() async {
   await Supabase.initialize(
@@ -47,18 +46,19 @@ class MyApp extends StatelessWidget {
                   displayColor: Colors.white,
                 )),
         debugShowCheckedModeBanner: false,
-        home: const Home());
+        home: const Layout());
   }
 }
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class Layout extends StatefulWidget {  
+  const Layout({super.key});
 
   @override
-  State createState() => _HomeState();
+  State<Layout> createState() => _LayoutState();
 }
 
-class _HomeState extends State {
+class _LayoutState extends State<Layout> {
+  Widget activePage = const Home();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,74 +85,7 @@ class _HomeState extends State {
               colors: WindowButtonColors(iconNormal: Colors.white)),
         ],
       ),
-      body: SingleChildScrollView(
-        controller: scrollController,
-        child: const Column(
-          children: [
-            Highlight(),
-            Padding(padding: EdgeInsets.symmetric(horizontal: 30), child: Category())
-          ],
-        ),
-      ),
+      body: const Home(),
     );
-  }
-}
-
-class Category extends StatefulWidget {
-  const Category({super.key});
-
-  @override
-  State createState() => _CategoryState();
-}
-
-class _CategoryState extends State<Category> {
-  final _future = Supabase.instance.client.from('bureau').select();
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: _future,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final bureaus = snapshot.data!;
-          return ListView.builder(
-            shrinkWrap: true,
-            itemCount: bureaus.length,
-            itemBuilder: ((context, index) {
-              final bureau = bureaus[index];
-              return Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
-                          child: Text(
-                            bureau['name'],
-                            style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: -0.5),
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                                child: Video(
-                              category: bureau['id'],
-                            ))
-                          ],
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              );
-            }),
-          );
-        });
   }
 }
