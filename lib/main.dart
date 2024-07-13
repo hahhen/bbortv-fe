@@ -26,6 +26,8 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
+ScrollController scrollController = ScrollController();
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -81,65 +83,14 @@ class _HomeState extends State {
         ],
       ),
       body: SingleChildScrollView(
+        controller: scrollController,
         child: Column(
           children: [
-            Container(
-                child: Stack(
-              children: [
-                Image.network(
-                    "https://images.unsplash.com/photo-1580757468214-c73f7062a5cb?fm=jpg&w=3000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8MTYlM0E5fGVufDB8fDB8fHww"),
-                Positioned(
-                    child: Expanded(
-                        child: Container(
-                  height: MediaQuery.of(context).size.height,
-                  decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                        Color.fromARGB(0, 0, 0, 0),
-                        Color.fromARGB(255, 0, 0, 0)
-                      ])),
-                ))),
-                Positioned(
-                    bottom: 70.0,
-                    left: 0.0,
-                    child: Container(
-                        width: 800,
-                        padding: const EdgeInsets.all(30),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(bottom: 10.0),
-                              child: const Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("YARTHI II: BREAKTHROUGH",
-                                      style: TextStyle(
-                                          height: 1,
-                                          fontSize: 45,
-                                          fontWeight: FontWeight.w700,
-                                          letterSpacing: -3.5)),
-                                  Text("BRAIN BUREAU OF RESEARCH NO.1",
-                                      style: TextStyle(
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.w400,
-                                          letterSpacing: -0.8)),
-                                ],
-                              ),
-                            ),
-                            const Text(
-                                "The sequence to the highly acclaimed debut album by Hahhen: Yarthi. Explores a grief thematic, surrounded by ambience and melancholy. It’s a deep dive into Kanye West’s 2018 album run, containing songs from Ye, Kids See Ghosts, Daytona and more.",
-                                style: TextStyle(
-                                  height: 1.2,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                )),
-                          ],
-                        ))),
-              ],
-            )),
+            const Highlight(),
+            Center(child: ElevatedButton(onPressed: (){
+              scrollController.animateTo(0,
+                    duration: const Duration(seconds: 1), curve: Curves.easeIn);
+            }, child: const Icon(Icons.keyboard_arrow_down))),
             const Padding(padding: EdgeInsets.all(30.0), child: Category())
           ],
         ),
@@ -181,28 +132,30 @@ class _VideoState extends State<Video> {
               itemCount: videos.length,
               itemBuilder: ((context, index) {
                 final video = videos[index];
-                return  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10.0),
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(14.0),
-                            child: Image.network(
-                              video['thumbnail'],
-                              width: 240,
-                              height: 135,
-                            )),
-                      ),
-                      Text(
-                        video['name'],
-                        style: const TextStyle(
-                            fontSize: 14, height: 1, letterSpacing: -0.5),
-                      ),
-                      Text(video['release_date'],
-                          style: const TextStyle(fontSize: 12))
-                    ],
-                  
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10.0),
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(14.0),
+                          child: Image.network(
+                            video['thumbnail'],
+                            width: 240,
+                            height: 135,
+                          )),
+                    ),
+                    Text(
+                      video['name'],
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                          height: 1,
+                          letterSpacing: -0.5),
+                    ),
+                    Text(video['release_date'],
+                        style: const TextStyle(fontSize: 12))
+                  ],
                 );
               }));
         });
@@ -251,9 +204,10 @@ class _CategoryState extends State<Category> {
                         ),
                         Row(
                           children: [
-                            Video(
+                            Expanded(
+                                child: Video(
                               category: bureau['id'],
-                            )
+                            ))
                           ],
                         )
                       ],
@@ -263,6 +217,90 @@ class _CategoryState extends State<Category> {
               );
             }),
           );
+        });
+  }
+}
+
+class Highlight extends StatefulWidget {
+  const Highlight({super.key});
+
+  @override
+  State<Highlight> createState() => _HighlightState();
+}
+
+class _HighlightState extends State<Highlight> {
+  final _future = Supabase.instance.client
+      .from('video')
+      .select('name, bureau(name), sinopsis, thumbnail')
+      .order('release_date', ascending: false)
+      .limit(1);
+  
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: _future,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          final highlight = snapshot.data![0];
+          return Container(
+              child: Stack(
+            children: [
+              Image.network(
+                  highlight['thumbnail'],),
+              Positioned(
+                  child: Expanded(
+                      child: Container(
+                height: MediaQuery.of(context).size.height,
+                decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                      Color.fromARGB(0, 0, 0, 0),
+                      Color.fromARGB(255, 0, 0, 0)
+                    ])),
+              ))),
+              Positioned(
+                  bottom: 70.0,
+                  left: 0.0,
+                  child: Container(
+                      width: 800,
+                      padding: const EdgeInsets.all(30),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(bottom: 10.0),
+                            child: const Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("YARTHI II: BREAKTHROUGH",
+                                    style: TextStyle(
+                                        height: 1,
+                                        fontSize: 45,
+                                        fontWeight: FontWeight.w700,
+                                        letterSpacing: -3.5)),
+                                Text("BRAIN BUREAU OF RESEARCH NO.1",
+                                    style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w400,
+                                        letterSpacing: -0.8)),
+                              ],
+                            ),
+                          ),
+                          const Text(
+                              "The sequence to the highly acclaimed debut album by Hahhen: Yarthi. Explores a grief thematic, surrounded by ambience and melancholy. It’s a deep dive into Kanye West’s 2018 album run, containing songs from Ye, Kids See Ghosts, Daytona and more.",
+                              style: TextStyle(
+                                height: 1.2,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              )),
+                        ],
+                      ))),
+            ],
+          ));
         });
   }
 }
