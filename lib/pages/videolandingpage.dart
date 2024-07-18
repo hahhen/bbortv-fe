@@ -4,16 +4,18 @@ import 'package:bbortv_fe/components/category.dart';
 import 'package:bbortv_fe/main.dart';
 
 class VideoLandingPage extends StatelessWidget {
-  const VideoLandingPage({super.key});
+  final int videoId;
+  const VideoLandingPage({super.key, required this.videoId});
+  
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
         controller: scrollController,
-        child: const Column(
+        child: Column(
           children: [
-            Highlight(),
-            Padding(padding: EdgeInsets.symmetric(horizontal: 30), child: Category())
+            Highlight( videoId: videoId,),
+            const Padding(padding: EdgeInsets.symmetric(horizontal: 30), child: Category())
           ],
         ),
     );

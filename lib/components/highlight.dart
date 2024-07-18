@@ -3,18 +3,26 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:bbortv_fe/main.dart';
 
 class Highlight extends StatefulWidget {
-  const Highlight({super.key});
+  final int videoId;
+  const Highlight({super.key, required this.videoId});
 
   @override
   State<Highlight> createState() => _HighlightState();
 }
 
 class _HighlightState extends State<Highlight> {
-  final _future = Supabase.instance.client
-      .from('video')
-      .select('name, bureau(name), sinopsis, thumbnail')
-      .order('release_date', ascending: false)
-      .limit(1);
+  late Future _future;
+
+  final int a = 2;
+  
+  @override
+  void initState() {
+    super.initState();
+    _future = Supabase.instance.client
+        .from('video')
+        .select('name, bureau(name), sinopsis, thumbnail')
+        .match({'id': widget.videoId});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +82,7 @@ class _HighlightState extends State<Highlight> {
                               ],
                             ),
                           ),
-                          Text(highlight['sinopsis'],
+                          Text(highlight['sinopsis']??'',
                               style: const TextStyle(
                                 height: 1.2,
                                 fontSize: 14,
@@ -88,7 +96,8 @@ class _HighlightState extends State<Highlight> {
                     alignment: Alignment.bottomCenter,
                     child: IconButton(
                         onPressed: () {
-                          scrollController.animateTo(MediaQuery.of(context).size.height,
+                          scrollController.animateTo(
+                              MediaQuery.of(context).size.height,
                               duration: const Duration(seconds: 1),
                               curve: Curves.ease);
                         },

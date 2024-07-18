@@ -58,7 +58,19 @@ class Layout extends StatefulWidget {
 }
 
 class _LayoutState extends State<Layout> {
-  Widget activePage = const Home();
+  late Widget activePage;
+
+  @override
+  void initstate(){
+    super.initState();
+    activePage = const Home();
+  }
+  void callback(Widget nextPage) {
+    setState(() {
+      activePage = nextPage;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
