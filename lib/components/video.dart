@@ -32,39 +32,51 @@ class _VideoState extends State<Video> {
             return const Center(child: CircularProgressIndicator());
           }
           final videos = snapshot.data!;
-          return  
-          ListView.builder(
+          return ListView.builder(
               shrinkWrap: true,
               itemCount: videos.length,
               itemBuilder: ((context, index) {
                 final video = videos[index];
-                return 
-                ElevatedButton(onPressed: () => context.read<CurrentPage>().updatePage(VideoLandingPage(videoId: video['id'])), child:
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                return Row(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 10.0),
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(14.0),
-                          child: Image.network(
-                            video['thumbnail'],
-                            width: 240,
-                            height: 135,
-                          )),
-                    ),
-                    Text(
-                      video['name'],
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 14,
-                          height: 1,
-                          letterSpacing: -0.5),
-                    ),
-                    Text(video['release_date'],
-                        style: const TextStyle(fontSize: 12))
+                    TextButton(
+                        style: ButtonStyle(
+                            foregroundColor:
+                                WidgetStateProperty.all(Colors.white),
+                            splashFactory: NoSplash.splashFactory,
+                            overlayColor:
+                                WidgetStateProperty.all(Colors.transparent),
+                            padding: WidgetStateProperty.all(EdgeInsets.zero)),
+                        onPressed: () => context
+                            .read<CurrentPage>()
+                            .updatePage(VideoLandingPage(key: UniqueKey(), videoId: video['id'])),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 10.0),
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(14.0),
+                                  child: Image.network(
+                                    video['thumbnail'],
+                                    width: 240,
+                                    height: 135,
+                                  )),
+                            ),
+                            Text(
+                              video['name'],
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14,
+                                  height: 1,
+                                  letterSpacing: -0.5),
+                            ),
+                            Text(video['release_date'],
+                                style: const TextStyle(fontSize: 12))
+                          ],
+                        ))
                   ],
-                ));
+                );
               }));
         });
   }

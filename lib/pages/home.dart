@@ -32,8 +32,8 @@ class _HomeState extends State<Home> {
                 final highlight = snapshot.data![0];
                 return Highlight(videoId: highlight['id']);
               }),
-           const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30), child: Category())
+          const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 30), child: Category()),
         ],
       ),
     );

@@ -5,7 +5,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:bbortv_fe/pages/home.dart';
 import 'package:provider/provider.dart';
 
-
 Future<void> main() async {
   await Supabase.initialize(
     url: 'https://mxxapptkrnqawvtwltoq.supabase.co',
@@ -28,8 +27,6 @@ Future<void> main() async {
   });
 
   runApp(
-    /// Providers are above [MyApp] instead of inside it, so that tests
-    /// can use [MyApp] while mocking the providers
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => CurrentPage()),
@@ -43,9 +40,9 @@ class CurrentPage with ChangeNotifier {
   Widget _currentPage = const Home();
   Widget get currentPage => _currentPage;
 
-  void updatePage(Widget newPage){
-   _currentPage = newPage;
-   notifyListeners();
+  void updatePage(Widget newPage) {
+    _currentPage = newPage;
+    notifyListeners();
   }
 }
 
@@ -71,7 +68,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class Layout extends StatefulWidget {  
+class Layout extends StatefulWidget {
   const Layout({super.key});
 
   @override
@@ -92,9 +89,20 @@ class _LayoutState extends State<Layout> {
               child: Container(
                   padding: const EdgeInsets.only(left: 30),
                   child: Row(children: [
-                    const Text("BBORTV",
-                        style: TextStyle(
-                            fontSize: 25, fontWeight: FontWeight.w700)),
+                    TextButton(
+                        style: ButtonStyle(
+                            foregroundColor:
+                                WidgetStateProperty.all(Colors.white),
+                            splashFactory: NoSplash.splashFactory,
+                            overlayColor:
+                                WidgetStateProperty.all(Colors.transparent),
+                            padding: WidgetStateProperty.all(EdgeInsets.zero)),
+                        onPressed: () => context
+                            .read<CurrentPage>()
+                            .updatePage(const Home()),
+                        child: const Text("BBORTV",
+                            style: TextStyle(
+                                fontSize: 25, fontWeight: FontWeight.w700))),
                     Expanded(child: MoveWindow())
                   ]))),
           MinimizeWindowButton(

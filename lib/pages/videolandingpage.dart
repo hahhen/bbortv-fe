@@ -14,7 +14,13 @@ class VideoLandingPage extends StatelessWidget {
         controller: scrollController,
         child: Column(
           children: [
-            Highlight( videoId: videoId,),
+            Stack(
+              children: [
+                
+                Highlight( videoId: videoId,),
+              ],
+            ),
+            
             const Padding(padding: EdgeInsets.symmetric(horizontal: 30), child: Category())
           ],
         ),
