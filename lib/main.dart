@@ -3,6 +3,8 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:bbortv_fe/pages/home.dart';
+import 'package:provider/provider.dart';
+
 
 Future<void> main() async {
   await Supabase.initialize(
@@ -25,7 +27,26 @@ Future<void> main() async {
     await windowManager.setAspectRatio(16 / 9);
   });
 
-  runApp(const MyApp());
+  runApp(
+    /// Providers are above [MyApp] instead of inside it, so that tests
+    /// can use [MyApp] while mocking the providers
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => CurrentPage()),
+      ],
+      child: const MyApp(),
+    ),
+  );
+}
+
+class CurrentPage with ChangeNotifier {
+  Widget _currentPage = const Home();
+  Widget get currentPage => _currentPage;
+
+  void updatePage(Widget newPage){
+   _currentPage = newPage;
+   notifyListeners();
+  }
 }
 
 ScrollController scrollController = ScrollController();
@@ -58,19 +79,6 @@ class Layout extends StatefulWidget {
 }
 
 class _LayoutState extends State<Layout> {
-  late Widget activePage;
-
-  @override
-  void initstate(){
-    super.initState();
-    activePage = const Home();
-  }
-  void callback(Widget nextPage) {
-    setState(() {
-      activePage = nextPage;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,7 +105,7 @@ class _LayoutState extends State<Layout> {
               colors: WindowButtonColors(iconNormal: Colors.white)),
         ],
       ),
-      body: const Home(),
+      body: context.watch<CurrentPage>().currentPage,
     );
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:bbortv_fe/main.dart';
+import 'package:bbortv_fe/pages/videolandingpage.dart';
 
 class Video extends StatefulWidget {
   final int category;
@@ -30,12 +32,14 @@ class _VideoState extends State<Video> {
             return const Center(child: CircularProgressIndicator());
           }
           final videos = snapshot.data!;
-          return ListView.builder(
+          return  
+          ListView.builder(
               shrinkWrap: true,
               itemCount: videos.length,
               itemBuilder: ((context, index) {
                 final video = videos[index];
                 return 
+                ElevatedButton(onPressed: () => context.read<CurrentPage>().updatePage(VideoLandingPage(videoId: video['id'])), child:
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -60,7 +64,7 @@ class _VideoState extends State<Video> {
                     Text(video['release_date'],
                         style: const TextStyle(fontSize: 12))
                   ],
-                );
+                ));
               }));
         });
   }
