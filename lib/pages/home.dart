@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:bbortv_fe/components/highlight.dart';
 import 'package:bbortv_fe/components/category.dart';
 import 'package:bbortv_fe/main.dart';
+import 'package:flutter/widgets.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Home extends StatefulWidget {
@@ -34,6 +35,15 @@ class _HomeState extends State<Home> {
               }),
           const Padding(
               padding: EdgeInsets.symmetric(horizontal: 30), child: Category()),
+          const Padding(
+            padding: EdgeInsets.all(30.0),
+            child: Column(
+              children: [
+                Text("© 2024 Brain Bureau Of Research"),
+                Text("v0.0.1")
+              ],
+            ),
+          )
         ],
       ),
     );
