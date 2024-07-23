@@ -17,10 +17,8 @@ class _VideoState extends State<Video> {
   @override
   void initState() {
     super.initState();
-    _future = Supabase.instance.client
-        .from('video')
-        .select()
-        .match({'bureau': widget.category});
+    _future = Supabase.instance.client.from('video').select().match(
+        {'bureau': widget.category}).order('release_date', ascending: false);
   }
 
   @override
@@ -32,14 +30,17 @@ class _VideoState extends State<Video> {
             return const Center(child: CircularProgressIndicator());
           }
           final videos = snapshot.data!;
-          return ListView.builder(
-              shrinkWrap: true,
-              itemCount: videos.length,
-              itemBuilder: ((context, index) {
-                final video = videos[index];
-                return Row(
-                    children: [
-                    TextButton(
+          return SizedBox(
+            height: 176,
+            child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                shrinkWrap: true,
+                itemCount: videos.length,
+                itemBuilder: ((context, index) {
+                  final video = videos[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 20.0),
+                    child: TextButton(
                         style: ButtonStyle(
                             foregroundColor:
                                 WidgetStateProperty.all(Colors.white),
@@ -47,9 +48,9 @@ class _VideoState extends State<Video> {
                             overlayColor:
                                 WidgetStateProperty.all(Colors.transparent),
                             padding: WidgetStateProperty.all(EdgeInsets.zero)),
-                        onPressed: () => context
-                            .read<CurrentPage>()
-                            .updatePage(VideoLandingPage(key: UniqueKey(), videoId: video['id'])),
+                        onPressed: () => context.read<CurrentPage>().updatePage(
+                            VideoLandingPage(
+                                key: UniqueKey(), videoId: video['id'])),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -74,10 +75,10 @@ class _VideoState extends State<Video> {
                             Text(video['release_date'],
                                 style: const TextStyle(fontSize: 12))
                           ],
-                        ))
-                  ],
-                );
-              }));
+                        )),
+                  );
+                })),
+          );
         });
   }
 }

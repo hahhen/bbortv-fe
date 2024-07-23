@@ -1,4 +1,6 @@
+import 'package:bbortv_fe/pages/player.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:bbortv_fe/main.dart';
 
@@ -17,7 +19,7 @@ class _HighlightState extends State<Highlight> {
     super.initState();
     _future = Supabase.instance.client
         .from('video')
-        .select('name, bureau(name), sinopsis, thumbnail')
+        .select('id, name, bureau(name), sinopsis, thumbnail, src')
         .match({'id': widget.videoId});
   }
 
@@ -53,7 +55,10 @@ class _HighlightState extends State<Highlight> {
                   )),
               Positioned(
                   bottom: 70.0,
+                  width: MediaQuery.of(context).size.width,
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
                           width: 800,
@@ -88,7 +93,24 @@ class _HighlightState extends State<Highlight> {
                                   )),
                             ],
                           )),
-                      Container(margin: EdgeInsets.only(left: 100) ,child: Text("a"))
+                      Container(
+                          padding: const EdgeInsets.all(30),
+                          margin: const EdgeInsets.only(left: 100),
+                          child: Row(
+                            children: [
+                              IconButton(
+                                  style: IconButton.styleFrom(
+                                      backgroundColor: Colors.white),
+                                  color: Colors.black,
+                                  onPressed: () => context
+                                      .read<CurrentPage>()
+                                      .updatePage(Player(
+                                          key: UniqueKey(),
+                                          videoId: highlight['id'],
+                                          src: highlight['src'])),
+                                  icon: const Icon(Icons.play_arrow, size: 50)),
+                            ],
+                          ))
                     ],
                   )),
               Positioned.fill(
