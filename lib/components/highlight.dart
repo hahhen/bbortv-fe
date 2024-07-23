@@ -102,12 +102,13 @@ class _HighlightState extends State<Highlight> {
                                   style: IconButton.styleFrom(
                                       backgroundColor: Colors.white),
                                   color: Colors.black,
-                                  onPressed: () => context
-                                      .read<CurrentPage>()
-                                      .updatePage(Player(
-                                          key: UniqueKey(),
-                                          videoId: highlight['id'],
-                                          src: highlight['src'])),
+                                  onPressed: () => {},
+                                      // context
+                                      // .read<CurrentPage>()
+                                      // .updatePage(Player(
+                                      //     key: UniqueKey(),
+                                      //     videoId: highlight['id'],
+                                      //     src: highlight['src'])),
                                   icon: const Icon(Icons.play_arrow, size: 50)),
                             ],
                           ))
