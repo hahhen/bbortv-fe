@@ -38,7 +38,7 @@ class _VideoState extends State<Video> {
               itemBuilder: ((context, index) {
                 final video = videos[index];
                 return Row(
-                  children: [
+                    children: [
                     TextButton(
                         style: ButtonStyle(
                             foregroundColor:

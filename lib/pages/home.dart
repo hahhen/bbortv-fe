@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:bbortv_fe/components/highlight.dart';
 import 'package:bbortv_fe/components/category.dart';
 import 'package:bbortv_fe/main.dart';
-import 'package:flutter/widgets.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Home extends StatefulWidget {

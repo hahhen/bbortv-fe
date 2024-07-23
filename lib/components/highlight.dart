@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:bbortv_fe/main.dart';
-import 'package:bbortv_fe/pages/videolandingpage.dart';
 
 class Highlight extends StatefulWidget {
   final int videoId;
@@ -14,9 +12,6 @@ class Highlight extends StatefulWidget {
 
 class _HighlightState extends State<Highlight> {
   late Future _future;
-
-  final int a = 2;
-
   @override
   void initState() {
     super.initState();
