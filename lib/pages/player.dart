@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:bbortv_fe/components/highlight.dart';
-import 'package:bbortv_fe/components/category.dart';
-import 'package:bbortv_fe/main.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:chewie/chewie.dart';
+import 'package:video_player/video_player.dart';
 
 class Player extends StatefulWidget {
   final int videoId;
@@ -15,74 +12,38 @@ class Player extends StatefulWidget {
 }
 
 class _PlayerState extends State<Player> {
-  late Future _future;
-  late YoutubePlayerController _controller;
-  late TextEditingController _idController;
-  late TextEditingController _seekToController;
+  late VideoPlayerController _videoPlayerController;
+  ChewieController? _chewieController;
 
-  late PlayerState _playerState;
-  final bool _isPlayerReady = false;
   @override
   void initState() {
+    initializePlayer();
     super.initState();
-    _controller = YoutubePlayerController(
-      initialVideoId: widget.src,
-      flags: const YoutubePlayerFlags(
-        mute: false,
-        autoPlay: true,
-        disableDragSeek: false,
-        loop: false,
-        isLive: false,
-        forceHD: false,
-      ),
-    )..addListener(listener);
-    _idController = TextEditingController();
-    _seekToController = TextEditingController();
-    _playerState = PlayerState.unknown;
-
-    _future = Supabase.instance.client
-        .from('video')
-        .select('name, bureau(name), src')
-        .match({'id': widget.videoId});
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return YoutubePlayer(
-      controller: _controller,
-      showVideoProgressIndicator: true,
-      progressIndicatorColor: Colors.amber,
-      progressColors: const ProgressBarColors(
-        playedColor: Colors.amber,
-        handleColor: Colors.amberAccent,
-      ),
-      onReady: () {
-        _controller.addListener(listener);
-      },
+  Future initializePlayer() async {
+    _videoPlayerController =
+        VideoPlayerController.networkUrl(Uri.parse("https://d2oavvvuzyi0w4.cloudfront.net/media/yarthi2.mp4"));
+    await _videoPlayerController.initialize();
+    _chewieController = ChewieController(
+      videoPlayerController: _videoPlayerController,
+      autoPlay: true,
     );
-  }
-
-  void listener() {
-    if (_isPlayerReady && mounted && !_controller.value.isFullScreen) {
-      setState(() {
-        _playerState = _controller.value.playerState;
-        // _videoMetaData = _controller.metadata;
-      });
-    }
-  }
-
-  @override
-  void deactivate() {
-    // Pauses video while navigating to next page.
-    _controller.pause();
-    super.deactivate();
+    setState(() {});
   }
 
   @override
   void dispose() {
-    _controller.dispose();
-    _idController.dispose();
-    _seekToController.dispose();
+    _videoPlayerController.dispose();
+    _chewieController?.dispose();
     super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _chewieController!=null? Chewie(
+      controller: _chewieController!,
+    ):
+    const Center(child: CircularProgressIndicator());
   }
 }

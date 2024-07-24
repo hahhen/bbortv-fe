@@ -95,20 +95,19 @@ class _HighlightState extends State<Highlight> {
                           )),
                       Container(
                           padding: const EdgeInsets.all(30),
-                          margin: const EdgeInsets.only(left: 100),
                           child: Row(
                             children: [
                               IconButton(
                                   style: IconButton.styleFrom(
                                       backgroundColor: Colors.white),
                                   color: Colors.black,
-                                  onPressed: () => {},
-                                      // context
-                                      // .read<CurrentPage>()
-                                      // .updatePage(Player(
-                                      //     key: UniqueKey(),
-                                      //     videoId: highlight['id'],
-                                      //     src: highlight['src'])),
+                                  onPressed: () =>
+                                      context
+                                      .read<CurrentPage>()
+                                      .updatePage(Player(
+                                          key: UniqueKey(),
+                                          videoId: highlight['id'],
+                                          src: highlight['src'])),
                                   icon: const Icon(Icons.play_arrow, size: 50)),
                             ],
                           ))
