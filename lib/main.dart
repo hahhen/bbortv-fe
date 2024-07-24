@@ -55,7 +55,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         theme: ThemeData(
-            colorScheme: const ColorScheme.dark(),
+            colorScheme: const ColorScheme(
+          brightness: Brightness.dark,
+          primary: Colors.white,
+          onPrimary: Colors.black,
+          secondary: Colors.black,
+          onSecondary: Colors.white,
+          error: Colors.red,
+          onError: Colors.black,
+          surface: Colors.black,
+          onSurface: Colors.white,
+        ),
             scaffoldBackgroundColor: Colors.black,
             fontFamily: 'Nimbus Sans L',
             textTheme: Theme.of(context).textTheme.apply(
