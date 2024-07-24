@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   app_links
   bitsdojo_window_windows
+  fvp
   screen_retriever
   url_launcher_windows
   window_manager

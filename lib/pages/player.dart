@@ -22,8 +22,8 @@ class _PlayerState extends State<Player> {
   }
 
   Future initializePlayer() async {
-    _videoPlayerController =
-        VideoPlayerController.networkUrl(Uri.parse("https://d2oavvvuzyi0w4.cloudfront.net/media/yarthi2.mp4"));
+    _videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(
+        widget.src));
     await _videoPlayerController.initialize();
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController,
@@ -41,9 +41,14 @@ class _PlayerState extends State<Player> {
 
   @override
   Widget build(BuildContext context) {
-    return _chewieController!=null? Chewie(
-      controller: _chewieController!,
-    ):
-    const Center(child: CircularProgressIndicator());
+    return _chewieController != null
+        ? Theme(
+            data: ThemeData.light().copyWith(
+              platform: TargetPlatform.iOS,
+            ),
+            child: Chewie(
+              controller: _chewieController!,
+            ))
+        : const Center(child: CircularProgressIndicator());
   }
 }
