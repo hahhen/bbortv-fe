@@ -19,8 +19,6 @@ class _PlayerState extends State<Player> {
   late VideoPlayerController _videoPlayerController;
   ChewieController? _chewieController;
   late int videoId;
-  double opacity = 0;
-  late final RestartableTimer _timer;
 
   @override
   void initState() {
@@ -36,6 +34,8 @@ class _PlayerState extends State<Player> {
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController,
       autoPlay: true,
+      allowFullScreen: false,
+      allowMuting: false,
     );
     setState(() {});
   }
@@ -47,74 +47,20 @@ class _PlayerState extends State<Player> {
     super.dispose();
   }
 
-  void _hideControlsAfterTimer() async {
-    if (opacity != 0) {
-      _timer = RestartableTimer(const Duration(seconds: 3), () {
-        setState(() {
-          opacity = 0;
-        });
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return _chewieController != null
-        ? Listener(
-            behavior: HitTestBehavior.translucent,
-            onPointerDown: (_) {
-              if (opacity == 0) {
-                setState(() {
-                  opacity = 1;
-                });
-              } else {
-                _timer.reset();
-                _hideControlsAfterTimer();
-              }
-            },
-            onPointerHover: (_) {
-              if (opacity == 0) {
-                setState(() {
-                  opacity = 1;
-                });
-              }
-            },
-            child: Stack(
-              children: [
-                Theme(
-                    data: ThemeData.light().copyWith(
-                      platform: TargetPlatform.iOS,
-                    ),
-                    child: Chewie(
-                      controller: _chewieController!,
-                    )),
-                Positioned(
-                    top: 60,
-                    left: 10,
-                    child: AnimatedOpacity(
-                      opacity: opacity,
-                      duration: const Duration(milliseconds: 300),
-                      child: TextButton(
-                        child: const Row(
-                          children: [
-                            Icon(
-                              Icons.arrow_back,
-                              size: 10,
-                            ),
-                            SizedBox(width: 5),
-                            Text("Go back to this video's page",
-                                style: TextStyle(fontSize: 10)),
-                          ],
-                        ),
-                        onPressed: () => {
-                          context
-                              .read<CurrentPage>()
-                              .updatePage(VideoLandingPage(videoId: videoId))
-                        },
-                      ),
-                    ))
-              ],
-            ))
+        ? Stack(
+          children: [
+            Theme(
+                data: ThemeData.light().copyWith(
+                  platform: TargetPlatform.iOS,
+                ),
+                child: Chewie(
+                  controller: _chewieController!,
+                )),
+          ],
+        )
         : const Center(child: CircularProgressIndicator());
   }
 }
