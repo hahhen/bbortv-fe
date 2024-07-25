@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:bbortv_fe/pages/videolandingpage.dart';
 import 'package:flutter/material.dart';
 import 'package:chewie/chewie.dart';
@@ -72,48 +74,81 @@ class _PlayerState extends State<Player> {
     });
   }
 
+  void _chewieUpdateVolume(double volume) {
+    _videoPlayerController.setVolume(volume);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return _chewieController != null
         ? Listener(
+            onPointerMove: (_) => _cancelAndRestartTimer(),
             onPointerDown: (_) => _cancelAndRestartTimer(),
             onPointerHover: (_) => _cancelAndRestartTimer(),
             child: Stack(
-            children: [
-              Theme(
-                  data: ThemeData.light().copyWith(
-                    platform: TargetPlatform.iOS,
-                  ),
-                  child: Chewie(
-                    controller: _chewieController!,
-                  )),
-              Positioned(
-                  top: 60,
-                  left: 10,
-                  child: AnimatedOpacity(
-                    opacity: notifier.hideStuff ? 0.0 : 1.0,
-                    duration: const Duration(milliseconds: 300),
-                    child: TextButton(
-                      child: const Row(
-                        children: [
-                          Icon(
-                            Icons.arrow_back,
-                            size: 10,
-                          ),
-                          SizedBox(width: 5),
-                          Text("Go back to this video's page",
-                              style: TextStyle(fontSize: 10)),
-                        ],
-                      ),
-                      onPressed: () => {
-                        context
-                            .read<CurrentPage>()
-                            .updatePage(VideoLandingPage(videoId: videoId))
-                      },
+              children: [
+                Theme(
+                    data: ThemeData.light().copyWith(
+                      platform: TargetPlatform.iOS,
                     ),
-                  ))
-            ],
-          ))
+                    child: Chewie(
+                      controller: _chewieController!,
+                    )),
+                Positioned(
+                    top: 60,
+                    left: 10,
+                    child: AnimatedOpacity(
+                      opacity: notifier.hideStuff ? 0.0 : 1.0,
+                      duration: const Duration(milliseconds: 300),
+                      child: TextButton(
+                        child: const Row(
+                          children: [
+                            Icon(
+                              Icons.arrow_back,
+                              size: 10,
+                            ),
+                            SizedBox(width: 5),
+                            Text("Go back to this video's page",
+                                style: TextStyle(fontSize: 10)),
+                          ],
+                        ),
+                        onPressed: () => {
+                          context
+                              .read<CurrentPage>()
+                              .updatePage(VideoLandingPage(videoId: videoId))
+                        },
+                      ),
+                    )),
+                Positioned(
+                    bottom: 60,
+                    child: AnimatedOpacity(
+                        opacity: notifier.hideStuff ? 0.0 : 1.0,
+                        duration: const Duration(milliseconds: 300),
+                        child: ClipRect(
+                            
+                            child: BackdropFilter(
+                                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                                child: Container(
+                                  padding: const EdgeInsets.all(10),
+                                  color: Color.fromARGB(181, 41, 41, 41),
+                                  child: SliderTheme(
+                                      data: const SliderThemeData(
+                                          trackHeight: 3,
+                                          activeTrackColor: Colors.white70,
+                                          inactiveTrackColor: Colors.white10,
+                                          overlayShape: RoundSliderOverlayShape(
+                                              overlayRadius: 15),
+                                          thumbShape: RoundSliderThumbShape(
+                                              enabledThumbRadius: 7)),
+                                      child: Slider(
+                                          value: _videoPlayerController
+                                              .value.volume,
+                                          onChanged: (value) =>
+                                              {_chewieUpdateVolume(value)})),
+                                )))))
+              ],
+            ))
         : const Center(child: CircularProgressIndicator());
   }
 }
