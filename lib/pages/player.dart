@@ -4,6 +4,7 @@ import 'package:chewie/chewie.dart';
 import 'package:video_player/video_player.dart';
 import 'package:bbortv_fe/main.dart';
 import 'package:provider/provider.dart';
+import 'package:async/async.dart';
 
 class Player extends StatefulWidget {
   final int videoId;
@@ -19,6 +20,7 @@ class _PlayerState extends State<Player> {
   ChewieController? _chewieController;
   late int videoId;
   double opacity = 0;
+  late final RestartableTimer _timer;
 
   @override
   void initState() {
@@ -45,6 +47,16 @@ class _PlayerState extends State<Player> {
     super.dispose();
   }
 
+  void _hideControlsAfterTimer() async {
+    if (opacity != 0) {
+      _timer = RestartableTimer(const Duration(seconds: 3), () {
+        setState(() {
+          opacity = 0;
+        });
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return _chewieController != null
@@ -55,6 +67,9 @@ class _PlayerState extends State<Player> {
                 setState(() {
                   opacity = 1;
                 });
+              } else {
+                _timer.reset();
+                _hideControlsAfterTimer();
               }
             },
             onPointerHover: (_) {
