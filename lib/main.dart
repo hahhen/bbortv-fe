@@ -4,6 +4,7 @@ import 'package:window_manager/window_manager.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:bbortv_fe/pages/home.dart';
 import 'package:provider/provider.dart';
+import 'package:chewie/src/notifiers/index.dart';
 
 Future<void> main() async {
   await Supabase.initialize(
@@ -30,6 +31,7 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => CurrentPage()),
+        ChangeNotifierProvider(create: (_) => PlayerNotifier.init()),
       ],
       child: const MyApp(),
     ),
