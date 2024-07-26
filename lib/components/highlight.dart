@@ -19,7 +19,7 @@ class _HighlightState extends State<Highlight> {
     super.initState();
     _future = Supabase.instance.client
         .from('video')
-        .select('id, name, bureau(name), sinopsis, thumbnail, src')
+        .select('id, name, bureau(name), sinopsis, thumbnail, src, chapters')
         .match({'id': widget.videoId});
   }
 
@@ -107,7 +107,9 @@ class _HighlightState extends State<Highlight> {
                                       .updatePage(Player(
                                           key: UniqueKey(),
                                           videoId: highlight['id'],
-                                          src: highlight['src'])),
+                                          src: highlight['src'],
+                                          chapters: highlight['chapters'],
+                                          )),
                                   icon: const Icon(Icons.play_arrow, size: 50)),
                             ],
                           ))
