@@ -4,27 +4,26 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:bbortv_fe/main.dart';
 import 'package:bbortv_fe/pages/videolandingpage.dart';
 
-class Video extends StatefulWidget {
-  final int category;
-  const Video({super.key, required this.category});
+class SearchedVideos extends StatefulWidget {
+  final String pattern;
+  const SearchedVideos({super.key, required this.pattern});
 
   @override
-  State<Video> createState() => _VideoState();
+  State<SearchedVideos> createState() => _SearchedVideosState();
 }
 
-class _VideoState extends State<Video> {
-  late final Future _future;
+class _SearchedVideosState extends State<SearchedVideos> {
   @override
   void initState() {
     super.initState();
-    _future = Supabase.instance.client.from('video').select().match(
-        {'bureau': widget.category}).order('release_date', ascending: false);
   }
 
   @override
   Widget build(BuildContext context) {
+    final pattern = widget.pattern;
+    final Future future = Supabase.instance.client.from('video').select().ilike('name', '%$pattern%');
     return FutureBuilder(
-        future: _future,
+        future: future,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());

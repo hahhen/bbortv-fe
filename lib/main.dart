@@ -1,3 +1,4 @@
+import 'package:bbortv_fe/pages/search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
@@ -119,7 +120,7 @@ class _LayoutState extends State<Layout> {
                                 fontSize: 25, fontWeight: FontWeight.w700))),
                     if (context.read<CurrentPage>()._currentPage.runtimeType != Player)
                       IconButton(
-                        onPressed: () => {},
+                        onPressed: () => {context.read<CurrentPage>().updatePage(const SearchPage())},
                         icon: const Icon(CupertinoIcons.search),
                       ),
                     Expanded(child: MoveWindow())
