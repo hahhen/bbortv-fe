@@ -42,7 +42,16 @@ class VideoLandingPage extends StatelessWidget {
             ],
           ),
           const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30), child: Category())
+              padding: EdgeInsets.symmetric(horizontal: 30), child: Category()),
+          const Padding(
+            padding: EdgeInsets.all(30.0),
+            child: Column(
+              children: [
+                Text("© 2024 Brain Bureau Of Research"),
+                Text("v0.0.1")
+              ],
+            ),
+          )
         ],
       ),
     );

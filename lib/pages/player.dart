@@ -37,7 +37,7 @@ class _PlayerState extends State<Player> {
     super.initState();
     videoId = widget.videoId;
     notifier = Provider.of<PlayerNotifier>(context, listen: false);
-    chapters = widget.chapters!;
+    chapters = widget.chapters ?? [];
   }
 
   Future initializePlayer() async {
@@ -175,41 +175,54 @@ class _PlayerState extends State<Player> {
                                     ],
                                   ),
                                 ))))),
-                Positioned(
-                    right: 5,
-                    top: 60,
-                    child: AnimatedOpacity(
-                        opacity: notifier.hideStuff ? 0.0 : 1.0,
-                        duration: const Duration(milliseconds: 300),
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10.0),
-                            child: BackdropFilter(
-                                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                                child: Container(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.5,
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.3,
-                                    padding: const EdgeInsets.all(10),
-                                    color:
-                                        const Color.fromARGB(181, 41, 41, 41),
-                                    child: Column(
-                                      children: [
-                                        ListView.builder(
+                chapters.isNotEmpty
+                    ? Positioned(
+                        right: 5,
+                        top: 80,
+                        child: AnimatedOpacity(
+                            opacity: notifier.hideStuff ? 0.0 : 1.0,
+                            duration: const Duration(milliseconds: 300),
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10.0),
+                                child: BackdropFilter(
+                                    filter:
+                                        ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                                    child: Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.5,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.3,
+                                        padding: const EdgeInsets.all(10),
+                                        color: const Color.fromARGB(
+                                            181, 41, 41, 41),
+                                        child: ListView.builder(
+                                            padding: EdgeInsets.zero,
                                             shrinkWrap: true,
                                             itemCount: chapters.length,
                                             itemBuilder: ((context, index) {
                                               final chapter = chapters[index];
-                                              final seconds = int.parse(chapter[0]);
+                                              final seconds =
+                                                  int.parse(chapter[0]);
                                               return TextButton(
-                                                  style: const ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))))),
+                                                  style: const ButtonStyle(
+                                                      shape: WidgetStatePropertyAll(
+                                                          RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          10))))),
                                                   onPressed: () => {
-                                                        _chewieController?.seekTo(
-                                                            Duration(
-                                                                seconds: seconds))
+                                                        _chewieController
+                                                            ?.seekTo(Duration(
+                                                                seconds:
+                                                                    seconds))
                                                       },
                                                   child: Padding(
-                                                    padding: const EdgeInsets.symmetric(vertical:8.0),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 8.0),
                                                     child: Column(
                                                       children: [
                                                         Align(
@@ -223,21 +236,21 @@ class _PlayerState extends State<Player> {
                                                         Align(
                                                             alignment: Alignment
                                                                 .centerLeft,
-                                                            child:Text(
-                                                            "${(seconds ~/ 60)~/60}:${(seconds ~/ 60) % 60}:${seconds % 60}",
-                                                            style: const TextStyle(
-                                                                color: Colors
-                                                                    .white70))),
+                                                            child: Text(
+                                                                "${(seconds ~/ 60) ~/ 60}:${(seconds ~/ 60) % 60}:${seconds % 60}",
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .white70))),
                                                         Align(
                                                             alignment: Alignment
                                                                 .centerLeft,
-                                                            child:Text(chapter[1])),
+                                                            child: Text(
+                                                                chapter[1])),
                                                       ],
                                                     ),
                                                   ));
-                                            })),
-                                      ],
-                                    ))))))
+                                            })))))))
+                    : Container()
               ],
             ))
         : const Center(child: CircularProgressIndicator());

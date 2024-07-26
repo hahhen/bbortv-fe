@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:window_manager/window_manager.dart';
@@ -5,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:bbortv_fe/pages/home.dart';
 import 'package:provider/provider.dart';
 import 'package:chewie/src/notifiers/index.dart';
+import 'package:bbortv_fe/pages/player.dart';
 
 Future<void> main() async {
   await Supabase.initialize(
@@ -58,16 +60,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         theme: ThemeData(
             colorScheme: const ColorScheme(
-          brightness: Brightness.dark,
-          primary: Colors.white,
-          onPrimary: Colors.black,
-          secondary: Colors.black,
-          onSecondary: Colors.white,
-          error: Colors.red,
-          onError: Colors.black,
-          surface: Colors.black,
-          onSurface: Colors.white,
-        ),
+              brightness: Brightness.dark,
+              primary: Colors.white,
+              onPrimary: Colors.black,
+              secondary: Colors.black,
+              onSecondary: Colors.white,
+              error: Colors.red,
+              onError: Colors.black,
+              surface: Colors.black,
+              onSurface: Colors.white,
+            ),
             scaffoldBackgroundColor: Colors.black,
             fontFamily: 'Nimbus Sans L',
             textTheme: Theme.of(context).textTheme.apply(
@@ -115,6 +117,11 @@ class _LayoutState extends State<Layout> {
                         child: const Text("BBORTV",
                             style: TextStyle(
                                 fontSize: 25, fontWeight: FontWeight.w700))),
+                    if (context.read<CurrentPage>()._currentPage.runtimeType != Player)
+                      IconButton(
+                        onPressed: () => {},
+                        icon: const Icon(CupertinoIcons.search),
+                      ),
                     Expanded(child: MoveWindow())
                   ]))),
           MinimizeWindowButton(
