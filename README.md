@@ -5,4 +5,4 @@ The Brain Bureau of Research is a fictional company of mine that engages in crea
 
 ## How to install
 
-In ``releases``, download the bbortv.rar file, extract it and execute bbortv.exe!
+In ``releases``, download the bbortv.rar file, extract it and execute bbortv_fe.exe!
