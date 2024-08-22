@@ -1,16 +1,8 @@
-# bbortv_fe
+# Brain Bureau of Research Television
 
-A new Flutter project.
+The Brain Bureau of Research is a fictional company of mine that engages in creative projects. Since I make a lot of video projects, they should be of easy access through this Windows desktop app!
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+## How to install
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+In ``releases``, download the bbortv.rar file, extract it and execute bbortv.exe!
